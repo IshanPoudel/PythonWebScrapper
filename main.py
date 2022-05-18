@@ -1,32 +1,315 @@
-
-from bs4 import BeautifulSoup
-import requests
-
-
-a = "california"
-print(a.lower().replace(" ", "-"))
-
-html_text = requests.get("https://wildfiretoday.com/tag/"+a+"/" , timeout = (3.05 , 20) ).text
-# print(html_text)
-
-soup = BeautifulSoup(html_text , 'html.parser' )
-print(soup)
-news_article_blob = soup.find('div' , id='primary'  )
-# print(news_article_blob)
-
-news_article = news_article_blob.find_all('article')
-
-
-for news_piece in news_article:
-    news_title = news_piece.h2.text
-    news_link = news_piece.a['href']
-    # news_location_blob = news_piece.find('div' , class_='meta-section')
-    # news_location = news_location_blob.find('span' , class_='tags-links').a.text
-    print(news_title)
-    print('\n')
-    print(news_link)
+import pyrebase
+from Scrape_Google_News import get_news_from_google
+import time
 
 
 
+
+config = {
+  "apiKey": "AIzaSyC_1TogWkh5bef9Z9gntHvX6l6QvYhK1nk",
+  "authDomain": "wildfirenews.firebaseapp.com",
+  "projectId": "wildfirenews",
+  "databaseURL": "https://wildfirenewsrealtime-default-rtdb.firebaseio.com/",
+  "storageBucket": "wildfirenews.appspot.com",
+  "messagingSenderId": "19605765095",
+  "appId": "1:19605765095:web:d290249f918de32a495b42"
+};
+
+
+
+firebase = pyrebase.initialize_app(config)
+database = firebase.database()
+
+disasters = ["wildfires" , "volcanoes" ]
+
+states = [ "Alaska" , "Alabama" , "Arkansas", "Arizona" , "California" , "Colorado"  ,"Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Iowa", "Idaho", "Illinois", "Indiana", "Kansas" ,  "Kentucky", "Louisiana", "Massachusetts", "Maryland", "Maine", "Michigan", "Minnesota", "Missouri", "Mississippi", "Montana", "North Carolina", "North Dakota", "Nebraska", "New Hampshire", "New Jersey", "New Mexico", "Nevada", "New York", "Ohio", "Oklahoma", "Oregon", "Pennsylvania" , "Rhode Island", "South Carolina", "South Dakota", "Tennessee",
+"Texas", "Utah", "Virginia", "Vermont", "Washington", "Wisconsin", "West Virginia", "Wyoming"]
+countries = ["Mexico " , "Canada" , "Chile" , "Argentina" , "Costa Rica" , "Colombia" , "Ecuador" , "Peru" , "Spain" , "Portugal" , "France" , "United Kingdom" , "Japan" ,"Indonesia" , "Papua New Guinea"  , "Russia" , "Ukraine" , "Germany" , "Vanuatu" , "Italy" , "Tunisia" , "Ukraine" , "Russia" , "Finland"]
+
+
+total_states = states
+# countryList = [
+# 	"Afghanistan",
+# 	"Albania",
+# 	"Algeria",
+# 	"American Samoa",
+# 	"Andorra",
+# 	"Angola",
+# 	"Anguilla",
+# 	"Antarctica",
+# 	"Antigua and Barbuda",
+# 	"Argentina",
+# 	"Armenia",
+# 	"Aruba",
+# 	"Australia",
+# 	"Austria",
+# 	"Azerbaijan",
+# 	"Bahamas (the)",
+# 	"Bahrain",
+# 	"Bangladesh",
+# 	"Barbados",
+# 	"Belarus",
+# 	"Belgium",
+# 	"Belize",
+# 	"Benin",
+# 	"Bermuda",
+# 	"Bhutan",
+# 	"Bolivia (Plurinational State of)",
+# 	"Bonaire, Sint Eustatius and Saba",
+# 	"Bosnia and Herzegovina",
+# 	"Botswana",
+# 	"Bouvet Island",
+# 	"Brazil",
+# 	"British Indian Ocean Territory (the)",
+# 	"Brunei Darussalam",
+# 	"Bulgaria",
+# 	"Burkina Faso",
+# 	"Burundi",
+# 	"Cabo Verde",
+# 	"Cambodia",
+# 	"Cameroon",
+# 	"Canada",
+# 	"Cayman Islands (the)",
+# 	"Central African Republic (the)",
+# 	"Chad",
+# 	"Chile",
+# 	"China",
+# 	"Christmas Island",
+# 	"Cocos (Keeling) Islands (the)",
+# 	"Colombia",
+# 	"Comoros (the)",
+# 	"Congo (the Democratic Republic of the)",
+# 	"Congo (the)",
+# 	"Cook Islands (the)",
+# 	"Costa Rica",
+# 	"Croatia",
+# 	"Cuba",
+# 	"Curaçao",
+# 	"Cyprus",
+# 	"Czechia",
+# 	"Côte d'Ivoire",
+# 	"Denmark",
+# 	"Djibouti",
+# 	"Dominica",
+# 	"Dominican Republic (the)",
+# 	"Ecuador",
+# 	"Egypt",
+# 	"El Salvador",
+# 	"Equatorial Guinea",
+# 	"Eritrea",
+# 	"Estonia",
+# 	"Eswatini",
+# 	"Ethiopia",
+# 	"Falkland Islands (the) [Malvinas]",
+# 	"Faroe Islands (the)",
+# 	"Fiji",
+# 	"Finland",
+# 	"France",
+# 	"French Guiana",
+# 	"French Polynesia",
+# 	"French Southern Territories (the)",
+# 	"Gabon",
+# 	"Gambia (the)",
+# 	"Georgia",
+# 	"Germany",
+# 	"Ghana",
+# 	"Gibraltar",
+# 	"Greece",
+# 	"Greenland",
+# 	"Grenada",
+# 	"Guadeloupe",
+# 	"Guam",
+# 	"Guatemala",
+# 	"Guernsey",
+# 	"Guinea",
+# 	"Guinea-Bissau",
+# 	"Guyana",
+# 	"Haiti",
+# 	"Heard Island and McDonald Islands",
+# 	"Holy See (the)",
+# 	"Honduras",
+# 	"Hong Kong",
+# 	"Hungary",
+# 	"Iceland",
+# 	"India",
+# 	"Indonesia",
+# 	"Iran (Islamic Republic of)",
+# 	"Iraq",
+# 	"Ireland",
+# 	"Isle of Man",
+# 	"Israel",
+# 	"Italy",
+# 	"Jamaica",
+# 	"Japan",
+# 	"Jersey",
+# 	"Jordan",
+# 	"Kazakhstan",
+# 	"Kenya",
+# 	"Kiribati",
+# 	"Korea (the Democratic People's Republic of)",
+# 	"Korea (the Republic of)",
+# 	"Kuwait",
+# 	"Kyrgyzstan",
+# 	"Lao People's Democratic Republic (the)",
+# 	"Latvia",
+# 	"Lebanon",
+# 	"Lesotho",
+# 	"Liberia",
+# 	"Libya",
+# 	"Liechtenstein",
+# 	"Lithuania",
+# 	"Luxembourg",
+# 	"Macao",
+# 	"Madagascar",
+# 	"Malawi",
+# 	"Malaysia",
+# 	"Maldives",
+# 	"Mali",
+# 	"Malta",
+# 	"Marshall Islands (the)",
+# 	"Martinique",
+# 	"Mauritania",
+# 	"Mauritius",
+# 	"Mayotte",
+# 	"Mexico",
+# 	"Micronesia (Federated States of)",
+# 	"Moldova (the Republic of)",
+# 	"Monaco",
+# 	"Mongolia",
+# 	"Montenegro",
+# 	"Montserrat",
+# 	"Morocco",
+# 	"Mozambique",
+# 	"Myanmar",
+# 	"Namibia",
+# 	"Nauru",
+# 	"Nepal",
+# 	"Netherlands (the)",
+# 	"New Caledonia",
+# 	"New Zealand",
+# 	"Nicaragua",
+# 	"Niger (the)",
+# 	"Nigeria",
+# 	"Niue",
+# 	"Norfolk Island",
+# 	"Northern Mariana Islands (the)",
+# 	"Norway",
+# 	"Oman",
+# 	"Pakistan",
+# 	"Palau",
+# 	"Palestine, State of",
+# 	"Panama",
+# 	"Papua New Guinea",
+# 	"Paraguay",
+# 	"Peru",
+# 	"Philippines (the)",
+# 	"Pitcairn",
+# 	"Poland",
+# 	"Portugal",
+# 	"Puerto Rico",
+# 	"Qatar",
+# 	"Republic of North Macedonia",
+# 	"Romania",
+# 	"Russian Federation (the)",
+# 	"Rwanda",
+# 	"Réunion",
+# 	"Saint Barthélemy",
+# 	"Saint Helena, Ascension and Tristan da Cunha",
+# 	"Saint Kitts and Nevis",
+# 	"Saint Lucia",
+# 	"Saint Martin (French part)",
+# 	"Saint Pierre and Miquelon",
+# 	"Saint Vincent and the Grenadines",
+# 	"Samoa",
+# 	"San Marino",
+# 	"Sao Tome and Principe",
+# 	"Saudi Arabia",
+# 	"Senegal",
+# 	"Serbia",
+# 	"Seychelles",
+# 	"Sierra Leone",
+# 	"Singapore",
+# 	"Sint Maarten (Dutch part)",
+# 	"Slovakia",
+# 	"Slovenia",
+# 	"Solomon Islands",
+# 	"Somalia",
+# 	"South Africa",
+# 	"South Georgia and the South Sandwich Islands",
+# 	"South Sudan",
+# 	"Spain",
+# 	"Sri Lanka",
+# 	"Sudan (the)",
+# 	"Suriname",
+# 	"Svalbard and Jan Mayen",
+# 	"Sweden",
+# 	"Switzerland",
+# 	"Syrian Arab Republic",
+# 	"Taiwan",
+# 	"Tajikistan",
+# 	"Tanzania, United Republic of",
+# 	"Thailand",
+# 	"Timor-Leste",
+# 	"Togo",
+# 	"Tokelau",
+# 	"Tonga",
+# 	"Trinidad and Tobago",
+# 	"Tunisia",
+# 	"Turkey",
+# 	"Turkmenistan",
+# 	"Turks and Caicos Islands (the)",
+# 	"Tuvalu",
+# 	"Uganda",
+# 	"Ukraine",
+# 	"United Arab Emirates (the)",
+# 	"United Kingdom of Great Britain and Northern Ireland (the)",
+# 	"United States Minor Outlying Islands (the)",
+# 	"United States of America (the)",
+# 	"Uruguay",
+# 	"Uzbekistan",
+# 	"Vanuatu",
+# 	"Venezuela (Bolivarian Republic of)",
+# 	"Viet Nam",
+# 	"Virgin Islands (British)",
+# 	"Virgin Islands (U.S.)",
+# 	"Wallis and Futuna",
+# 	"Western Sahara",
+# 	"Yemen",
+# 	"Zambia",
+# 	"Zimbabwe",
+# 	"Åland Islands"
+# ]
+
+
+
+print("I/m in test_firebase")
+#Create Data
+for disaster in disasters:
+
+    for state in total_states:
+        print("I'm in " + state)
+        time.sleep(4)
+        title , link = get_news_from_google(state+ " " + disaster)
+        database.child(state + " " + disaster).remove()
+        for i in range(len(title)) :
+            # print(state , title[i] , link[i])
+            # print('\n')
+            data = {'State': state, 'News Headline': title[i] , 'Link':link[i]}
+
+            database.child(state + " " + disaster).push(data)
+            time.sleep(2)
+        print('\n\n')
+
+cyclones= ["ropical Cyclone Karim severeStorms" , "ropical Cyclone Asani severeStorms"]
+for cyclone in cyclones:
+    time.sleep(4)
+    key = "T" + cyclone[:-12]
+    title , link = get_news_from_google(key)
+    print(key)
+    database.child(cyclone).remove()
+    for i in range(len(title)):
+        data = {'State': cyclone, 'News Headline': title[i] , 'Link':link[i]}
+        database.child(cyclone).push(data)
+        time.sleep(2)
 
 
