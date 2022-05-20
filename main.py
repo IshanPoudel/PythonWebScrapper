@@ -285,7 +285,7 @@ total_states = states
 
 
 
-print("I/m in test_firebase")
+print("I/m in _firebase")
 #Create Data
 for disaster in disasters:
 
