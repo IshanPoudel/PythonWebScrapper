@@ -20,12 +20,15 @@ config = {
 firebase = pyrebase.initialize_app(config)
 database = firebase.database()
 
-disasters = ["wildfires" , "volcanoes" ]
+# disasters = ["wildfires" , "volcanoes" ]
+#
+# states = [ "Alaska" , "Alabama" , "Arkansas", "Arizona" , "California" , "Colorado"  ,"Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Iowa", "Idaho", "Illinois", "Indiana", "Kansas" ,  "Kentucky", "Louisiana", "Massachusetts", "Maryland", "Maine", "Michigan", "Minnesota", "Missouri", "Mississippi", "Montana", "North Carolina", "North Dakota", "Nebraska", "New Hampshire", "New Jersey", "New Mexico", "Nevada", "New York", "Ohio", "Oklahoma", "Oregon", "Pennsylvania" , "Rhode Island", "South Carolina", "South Dakota", "Tennessee",
+# "Texas", "Utah", "Virginia", "Vermont", "Washington", "Wisconsin", "West Virginia", "Wyoming"]
+# countries = ["Mexico " , "Canada" , "Chile" , "Argentina" , "Costa Rica" , "Colombia" , "Ecuador" , "Peru" , "Spain" , "Portugal" , "France" , "United Kingdom" , "Japan" ,"Indonesia" , "Papua New Guinea"  , "Russia" , "Ukraine" , "Germany" , "Vanuatu" , "Italy" , "Tunisia" , "Ukraine" , "Russia" , "Finland"]
 
+disasters= ["earthquake"]
 states = [ "Alaska" , "Alabama" , "Arkansas", "Arizona" , "California" , "Colorado"  ,"Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Iowa", "Idaho", "Illinois", "Indiana", "Kansas" ,  "Kentucky", "Louisiana", "Massachusetts", "Maryland", "Maine", "Michigan", "Minnesota", "Missouri", "Mississippi", "Montana", "North Carolina", "North Dakota", "Nebraska", "New Hampshire", "New Jersey", "New Mexico", "Nevada", "New York", "Ohio", "Oklahoma", "Oregon", "Pennsylvania" , "Rhode Island", "South Carolina", "South Dakota", "Tennessee",
 "Texas", "Utah", "Virginia", "Vermont", "Washington", "Wisconsin", "West Virginia", "Wyoming"]
-countries = ["Mexico " , "Canada" , "Chile" , "Argentina" , "Costa Rica" , "Colombia" , "Ecuador" , "Peru" , "Spain" , "Portugal" , "France" , "United Kingdom" , "Japan" ,"Indonesia" , "Papua New Guinea"  , "Russia" , "Ukraine" , "Germany" , "Vanuatu" , "Italy" , "Tunisia" , "Ukraine" , "Russia" , "Finland"]
-
 
 total_states = states
 # countryList = [
@@ -300,16 +303,16 @@ for disaster in disasters:
             time.sleep(2)
         print('\n\n')
 
-cyclones= ["ropical Cyclone Karim severeStorms" , "ropical Cyclone Asani severeStorms"]
-for cyclone in cyclones:
-    time.sleep(4)
-    key = "T" + cyclone[:-12]
-    title , link = get_news_from_google(key)
-    print(key)
-    database.child(cyclone).remove()
-    for i in range(len(title)):
-        data = {'State': cyclone, 'News Headline': title[i] , 'Link':link[i]}
-        database.child(cyclone).push(data)
-        time.sleep(2)
+# cyclones= ["ropical Cyclone Karim severeStorms" , "ropical Cyclone Asani severeStorms"]
+# for cyclone in cyclones:
+#     time.sleep(4)
+#     key = "T" + cyclone[:-12]
+#     title , link = get_news_from_google(key)
+#     print(key)
+#     database.child(cyclone).remove()
+#     for i in range(len(title)):
+#         data = {'State': cyclone, 'News Headline': title[i] , 'Link':link[i]}
+#         database.child(cyclone).push(data)
+#         time.sleep(2)
 
 
