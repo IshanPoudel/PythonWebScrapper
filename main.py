@@ -6,13 +6,13 @@ import time
 
 
 config = {
-  "apiKey": "AIzaSyC_1TogWkh5bef9Z9gntHvX6l6QvYhK1nk",
-  "authDomain": "wildfirenews.firebaseapp.com",
-  "projectId": "wildfirenews",
-  "databaseURL": "https://wildfirenewsrealtime-default-rtdb.firebaseio.com/",
-  "storageBucket": "wildfirenews.appspot.com",
-  "messagingSenderId": "19605765095",
-  "appId": "1:19605765095:web:d290249f918de32a495b42"
+  "apiKey": "_",
+  "authDomain": "_",
+  "projectId": "_",
+  "databaseURL": "",
+  "storageBucket": "",
+  "messagingSenderId": "",
+  "appId": ""
 };
 
 
