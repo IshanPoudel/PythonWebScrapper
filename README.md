@@ -10,3 +10,7 @@ The script automaticaly scrapes Google news  stores them in firebase </h2>
 <b> In main.py , add , delete to the disasters array to keep track of more disasters. </b>
 
 </b> In main.py , add , delete to the states array to keep track of more locations. </b>
+
+<b> Sample Output </b>
+
+![Screenshot](Firebase.png)
