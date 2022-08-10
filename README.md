@@ -1,4 +1,4 @@
-# DisasterNewsScraper. Fins News Related to a Specific Disaster in a Specific Location and stores them in Firebase for use.
+# DisasterNewsScraper. Finds News Related to a Specific Disaster in a Specific Location and stores them in Firebase for use.
 
 <h2>
 The script automaticaly scrapes Google news  stores them in firebase </h2>
